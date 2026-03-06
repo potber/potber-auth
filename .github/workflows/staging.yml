@@ -6,17 +6,24 @@ on:
     branches:
     - main
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   lint:
-    uses: spuxx-dev/ci-cd/.github/workflows/npm_lint.yml@v4.1.0
+    uses: potber/.github/.github/workflows/npm_lint.yml@v1
 
   test:
-    uses: spuxx-dev/ci-cd/.github/workflows/npm_test-playwright.yml@v4.1.0
+    uses: potber/.github/.github/workflows/npm_test-playwright.yml@v1
 
   release_image:
     needs:
     - lint
     - test
-    uses: spuxx-dev/ci-cd/.github/workflows/docker_release_image.yml@v4.1.0
-    secrets:
-      dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+    permissions:
+      contents: read
+      packages: write
+    uses: potber/.github/.github/workflows/release_image.yml@v1
+    with:
+      latest: true
