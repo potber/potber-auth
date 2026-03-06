@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [1.6.0] - 2026-03-08
+
+### Chores
+
+- Move API to new Repository
+
 ## [1.5.0] - 2025-12-24
 
 ### Added

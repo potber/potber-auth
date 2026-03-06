@@ -13,9 +13,9 @@
 	<br />
 	<br />
 
-	Er verwendet <a href="https://github.com/spuxx-dev/potber-api" target="_blank">potber-api</a>, um
+	Er verwendet <a href="https://github.com/potber/potber-api" target="_blank">potber-api</a>, um
 	Nutzer:innen gegenüber einer begrenzten Liste vertrauenswürdiger Anwendungen (z.B.
-	<a href="https://github.com/spuxx-dev/potber-client" target="_blank">potber-client</a> und
+	<a href="https://github.com/potber/potber-client" target="_blank">potber-client</a> und
 	<a href="https://www.mods-mpe.de/" target="_blank">MPE</a>) zu authentifizieren.
 
 	<br />
@@ -26,7 +26,7 @@
 	<br />
 	<br />
 
-	<a class="button-link" href="https://github.com/spuxx-dev/potber-auth" target="_blank">
+	<a class="button-link" href="https://github.com/potber/potber-auth" target="_blank">
 		<Fa slot="icon" icon={faGithub} />
 		GitHub
 	</a>
