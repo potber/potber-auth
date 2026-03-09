@@ -11,6 +11,15 @@ export const clients: App.Client[] = [
 		]
 	},
 	{
+		name: 'potber-preview',
+		id: '1af5d165-2357-4bae-817d-a1d7f471ef67',
+		allowedRedirectUris: [
+			'http://localhost:4200/auth/callback',
+			'https://*.potber.kristofdreier.de/auth/callback',
+			'https://*.preview.potber.de/auth/callback'
+		]
+	},
+	{
 		name: 'mpe',
 		id: '2e216203-936a-4a75-94ea-307ab1ceb5f6',
 		allowedRedirectUris: [

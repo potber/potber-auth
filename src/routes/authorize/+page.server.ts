@@ -2,6 +2,7 @@ import { appConfig } from '$lib/config/app.config';
 import { clients } from '$lib/config/clients.config';
 import { fetchApi } from '$lib/utils/server.utils.js';
 import { createExpiryDate } from '$lib/utils/misc.utils.js';
+import { isAllowedRedirectUri } from '$lib/utils/redirect-uri.utils.js';
 import { getSession } from '$lib/utils/server.utils.js';
 import { error, fail } from '@sveltejs/kit';
 import { log } from '$lib/logging/index.js';
@@ -21,8 +22,8 @@ export const load = async ({ cookies, url, request }) => {
 	if (responseType !== 'token') error(400, "Invalid response_type. response_type must be 'token'.");
 	const redirectUri = url.searchParams.get('redirect_uri');
 	if (!redirectUri) error(400, 'Missing redirect_uri. Did you forget to include it?');
-	const redirectUriMatch = client.allowedRedirectUris.find(
-		(uri) => uri === decodeURIComponent(redirectUri)
+	const redirectUriMatch = client.allowedRedirectUris.find((uri) =>
+		isAllowedRedirectUri(uri, redirectUri)
 	);
 	if (!redirectUriMatch)
 		error(
