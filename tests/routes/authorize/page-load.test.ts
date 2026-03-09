@@ -34,6 +34,20 @@ test('should fail when visiting /authorize with an invalid redirect_uri', async 
 	await expect(page.getByText('Invalid redirect_uri')).toBeVisible();
 });
 
+test('should accept preview wildcard redirect_uri for the preview client', async ({ page }) => {
+	await page.goto(
+		'/authorize?client_id=1af5d165-2357-4bae-817d-a1d7f471ef67&response_type=token&redirect_uri=https://pr-123.potber.kristofdreier.de/auth/callback'
+	);
+	await expect(page.getByLabel('Username')).toBeVisible();
+});
+
+test('should reject nested preview subdomains for the preview client', async ({ page }) => {
+	await page.goto(
+		'/authorize?client_id=1af5d165-2357-4bae-817d-a1d7f471ef67&response_type=token&redirect_uri=https://foo.bar.potber.kristofdreier.de/auth/callback'
+	);
+	await expect(page.getByText('Invalid redirect_uri')).toBeVisible();
+});
+
 test('should show login form when request is valid', async ({ page }) => {
 	await page.goto(
 		'/authorize?client_id=45a14ddc-e3d3-4b5b-a45a-a04946974adc&response_type=token&redirect_uri=https://potber.de/auth/callback'
