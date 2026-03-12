@@ -1,16 +1,7 @@
 import globals from 'globals';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import js from '@eslint/js';
-import { FlatCompat } from '@eslint/eslintrc';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const compat = new FlatCompat({
-	baseDirectory: __dirname,
-	recommendedConfig: js.configs.recommended,
-	allConfig: js.configs.all
-});
+import svelte from 'eslint-plugin-svelte';
+import prettier from 'eslint-config-prettier';
 
 export default [
 	{
@@ -28,7 +19,9 @@ export default [
 			'**/yarn.lock'
 		]
 	},
-	...compat.extends('eslint:recommended', 'plugin:svelte/recommended', 'prettier'),
+	js.configs.recommended,
+	...svelte.configs['flat/recommended'],
+	prettier,
 	{
 		languageOptions: {
 			globals: {

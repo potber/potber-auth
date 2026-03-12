@@ -11,8 +11,8 @@
 	/** @type {string }*/
 	export let accessToken;
 
-	$: redirecting = false;
-	$: signOutIsBusy = false;
+	let redirecting = false;
+	let signOutIsBusy = false;
 
 	export function continueWithSession() {
 		redirecting = true;
