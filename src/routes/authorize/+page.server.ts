@@ -35,14 +35,22 @@ export const load = async ({ cookies, url, request }) => {
 	// In case the user is currently signed in, we need to validate the session
 	const accessToken = cookies.get(appConfig.sessionCookieName);
 	if (accessToken) {
-		const session = await getSession(accessToken);
-		if (!session) {
-			// If the session is invalid, we terminate it
-			cookies.delete(appConfig.sessionCookieName, { ...appConfig.sessionCookieOptions });
-			return {};
-		} else {
-			// If the session is valid, there's no need for them to sign in again
-			return { session: session, accessToken: accessToken };
+		try {
+			const session = await getSession(accessToken);
+			if (!session) {
+				// If the session is invalid, we terminate it
+				cookies.delete(appConfig.sessionCookieName, { ...appConfig.sessionCookieOptions });
+				return {};
+			} else {
+				// If the session is valid, there's no need for them to sign in again
+				return { session: session, accessToken: accessToken };
+			}
+		} catch (err) {
+			log(err instanceof Error ? err.message : String(err), {
+				level: 'error',
+				context: 'SessionLoad'
+			});
+			throw error(503, 'Authentication service unavailable.');
 		}
 	} else return {};
 };
@@ -68,23 +76,23 @@ export const actions = {
 			return fail(400);
 		}
 
-		const response = await fetchApi(appConfig.apiLoginEndpoint, {
-			request: {
-				method: 'POST',
-				body: JSON.stringify({
-					username,
-					password,
-					lifetime
-				})
-			}
-		});
-		if (!response.ok) {
-			if (response.status === 403) return fail(403);
-			else return fail(401);
-		}
-		const responseData = await response.json();
-		const { access_token } = responseData;
 		try {
+			const response = await fetchApi(appConfig.apiLoginEndpoint, {
+				request: {
+					method: 'POST',
+					body: JSON.stringify({
+						username,
+						password,
+						lifetime
+					})
+				}
+			});
+			if (!response.ok) {
+				if (response.status === 403) return fail(403);
+				else return fail(401);
+			}
+			const responseData = await response.json();
+			const { access_token } = responseData;
 			const session = await getSession(access_token);
 			if (!session) throw new Error("The session couldn't be retrieved.");
 			// Store the token in a cookie and return
@@ -93,9 +101,12 @@ export const actions = {
 				expires: createExpiryDate(session.exp)
 			});
 			return { accessToken: access_token };
-		} catch (error) {
-			log(error as string, { level: 'error', context: 'Login' });
-			return fail(500);
+		} catch (err) {
+			log(err instanceof Error ? err.message : String(err), {
+				level: 'error',
+				context: 'Login'
+			});
+			return fail(503);
 		}
 	}
 };
