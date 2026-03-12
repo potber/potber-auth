@@ -1,5 +1,6 @@
 import { appConfig } from '$lib/config/app.config';
 import { clients } from '$lib/config/clients.config';
+import { isAllowedLifetime } from '$lib/config/login.config';
 import { fetchApi } from '$lib/utils/server.utils.js';
 import { createExpiryDate } from '$lib/utils/misc.utils.js';
 import { isAllowedRedirectUri } from '$lib/utils/redirect-uri.utils.js';
@@ -54,8 +55,17 @@ export const actions = {
 		const password = data.get('password');
 		const lifetime = data.get('lifetime');
 
-		if (!username || !password || !lifetime) {
-			error(500);
+		if (
+			typeof username !== 'string' ||
+			typeof password !== 'string' ||
+			typeof lifetime !== 'string'
+		) {
+			return fail(400);
+		}
+
+		if (!isAllowedLifetime(lifetime)) {
+			log(`Rejected invalid lifetime value: ${lifetime}`, { level: 'warn', context: 'Login' });
+			return fail(400);
 		}
 
 		const response = await fetchApi(appConfig.apiLoginEndpoint, {

@@ -1,8 +1,13 @@
 import { http, HttpResponse } from 'msw';
 
+const allowedLifetimes = new Set(['31536000', '2592000', '86400', '3600']);
+
 export const authHandlers = [
 	http.post('https://api.potber.de/auth/login', async ({ request }) => {
-		const { username, password } = await request.json();
+		const { username, password, lifetime } = await request.json();
+		if (!allowedLifetimes.has(String(lifetime))) {
+			return new HttpResponse('Invalid lifetime', { status: 418 });
+		}
 		if (username === 'TestUser' && password === 'TestPassword') {
 			// The 'correct' username and password during tests is "TestUser" and "TestPassword"
 			return HttpResponse.json({ access_token: 'your-access-token' }, { status: 200 });
