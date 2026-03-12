@@ -11,6 +11,8 @@ export default [
 			'build',
 			'.svelte-kit',
 			'package',
+			'playwright-report',
+			'test-results',
 			'**/.env',
 			'**/.env.*',
 			'!**/.env.example',

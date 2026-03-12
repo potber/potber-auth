@@ -40,10 +40,14 @@ export const load = async ({ cookies, url, request }) => {
 			if (!session) {
 				// If the session is invalid, we terminate it
 				cookies.delete(appConfig.sessionCookieName, { ...appConfig.sessionCookieOptions });
-				return {};
+				return { redirectUri: decodeURIComponent(redirectUri) };
 			} else {
 				// If the session is valid, there's no need for them to sign in again
-				return { session: session, accessToken: accessToken };
+				return {
+					session: session,
+					accessToken: accessToken,
+					redirectUri: decodeURIComponent(redirectUri)
+				};
 			}
 		} catch (err) {
 			log(err instanceof Error ? err.message : String(err), {
@@ -52,7 +56,7 @@ export const load = async ({ cookies, url, request }) => {
 			});
 			throw error(503, 'Authentication service unavailable.');
 		}
-	} else return {};
+	} else return { redirectUri: decodeURIComponent(redirectUri) };
 };
 
 /** @type {import('./$types').Actions} */

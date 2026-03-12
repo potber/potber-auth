@@ -22,11 +22,14 @@
 	/** @type {string } */
 	let accessToken = data.accessToken ?? '';
 
+	/** @type {string} */
+	const redirectUri = data.redirectUri;
+
 	/** @type {boolean} */
 	$: submitIsBusy = state.status === 'success' || state.status === 'pending';
 
 	export function continueWithLogin() {
-		redirect(accessToken, 1000);
+		redirect(redirectUri, accessToken, 1000);
 	}
 </script>
 
@@ -34,7 +37,7 @@
 <div class="login-container">
 	<div class="upper-section">
 		{#if session && accessToken}
-			<SessionPanel {session} {accessToken} />
+			<SessionPanel {session} {accessToken} {redirectUri} />
 		{:else}
 			<form
 				method="POST"
