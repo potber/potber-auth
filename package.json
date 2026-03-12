@@ -10,12 +10,13 @@
 		"node": "24.x"
 	},
 	"scripts": {
+		"prebuild": "svelte-kit sync",
 		"start": "vite dev",
 		"dev": "vite dev",
 		"host": "vite dev --host",
 		"build": "vite build",
 		"preview": "vite preview",
-		"serve-tests": "vite build --mode test && ORIGIN=http://localhost:4173 node tests/server.js",
+		"serve-tests": "npm run build -- --mode test && ORIGIN=http://localhost:4173 node tests/server.js",
 		"test": "npm run test:ui",
 		"test:ui": "playwright test",
 		"lint": "prettier --check . && eslint . && svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
