@@ -21,8 +21,8 @@ test('should properly validate the form', async ({ page }) => {
 	expect(isValid).toBe(true);
 
 	const lifetimeField = page.getByLabel('Sitzungsdauer');
-	await lifetimeField.selectOption({ label: 'Ein Monat' });
-	expect(await lifetimeField.inputValue()).toBe('2592000');
+	await lifetimeField.selectOption({ label: 'Eine Woche' });
+	expect(await lifetimeField.inputValue()).toBe('604800');
 });
 
 test('should fail to log in', async ({ page }) => {

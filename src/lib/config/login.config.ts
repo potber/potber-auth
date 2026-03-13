@@ -5,8 +5,8 @@ export const lifetimeOptions = [
 		value: 31536000
 	},
 	{
-		label: 'Ein Monat',
-		value: 2592000
+		label: 'Eine Woche',
+		value: 604800
 	},
 	{
 		label: 'Ein Tag',
