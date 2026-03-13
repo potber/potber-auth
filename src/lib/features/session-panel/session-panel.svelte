@@ -11,12 +11,15 @@
 	/** @type {string }*/
 	export let accessToken;
 
-	$: redirecting = false;
-	$: signOutIsBusy = false;
+	/** @type {string} */
+	export let redirectUri;
+
+	let redirecting = false;
+	let signOutIsBusy = false;
 
 	export function continueWithSession() {
 		redirecting = true;
-		redirect(accessToken, 1000);
+		redirect(redirectUri, accessToken, 1000);
 	}
 
 	export async function signOut() {

@@ -10,9 +10,9 @@ import { createRequestId } from './misc.utils';
  */
 export async function fetchApi(
 	endpoint: string,
-	options?: { request?: RequestInit; accessToken?: string }
+	options?: { request?: RequestInit; accessToken?: string; timeoutMs?: number }
 ) {
-	const { request, accessToken } = { ...options };
+	const { request, accessToken, timeoutMs = appConfig.apiRequestTimeoutMs } = { ...options };
 	const url = `${appConfig.apiUrl}${endpoint}`;
 	const headers: Record<string, string> = {
 		Accept: 'application/json',
@@ -20,12 +20,30 @@ export async function fetchApi(
 	};
 	if (options?.accessToken) headers['Authorization'] = `Bearer ${accessToken}`;
 	const requestId = createRequestId();
+	const controller = new AbortController();
+	const timeoutId = setTimeout(
+		() => controller.abort(`Request timed out after ${timeoutMs}ms`),
+		timeoutMs
+	);
 	log(`Outgoing request [${requestId}]: ${request?.method ?? 'GET'} ${url}`, { context: 'Fetch' });
-	const response = await fetch(url, { headers, ...request });
-	log(`Incoming response [${requestId}]: ${response.status} ${response.statusText}`, {
-		context: 'Fetch'
-	});
-	return response;
+	try {
+		const response = await fetch(url, { headers, ...request, signal: controller.signal });
+		log(`Incoming response [${requestId}]: ${response.status} ${response.statusText}`, {
+			context: 'Fetch'
+		});
+		return response;
+	} catch (error) {
+		log(
+			`Request failed [${requestId}]: ${error instanceof Error ? error.message : String(error)}`,
+			{
+				level: 'error',
+				context: 'Fetch'
+			}
+		);
+		throw error;
+	} finally {
+		clearTimeout(timeoutId);
+	}
 }
 
 /**
@@ -44,4 +62,16 @@ export async function getSession(accessToken: string): Promise<App.Session | nul
 	} else {
 		return null;
 	}
+}
+
+export async function checkApiReadiness() {
+	const response = await fetchApi(appConfig.apiHealthEndpoint, {
+		timeoutMs: appConfig.apiHealthTimeoutMs
+	});
+	const ok =
+		response.ok || response.status === 401 || response.status === 403 || response.status === 405;
+	return {
+		ok,
+		status: response.status
+	};
 }

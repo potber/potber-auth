@@ -21,7 +21,7 @@
 		}}
 		{...$$restProps}
 	>
-		{#each options as option}
+		{#each options as option (option.value)}
 			<option value={option.value} selected={defaultOption === option}>{option.label}</option
 			>{/each}
 	</select>
