@@ -37,5 +37,13 @@ export const clients: App.Client[] = [
 		name: 'imgpot',
 		id: '1b59979e-e95f-4402-85e6-7c0ac509f1c7',
 		allowedRedirectUris: ['http://localhost:3000/auth/callback', 'https://imgpot.de/auth/callback']
+	},
+	{
+		name: 'potdroid',
+		id: '146a4c90-f191-4bfe-a837-80e0371329b4',
+		allowedRedirectUris: [
+			'com.mde.potdroid://auth/callback',
+			'com.mde.potdroid.dev://auth/callback'
+		]
 	}
 ];
