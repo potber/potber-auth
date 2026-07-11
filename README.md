@@ -126,12 +126,21 @@ npm ci
 
 If you use `nvm`, run `nvm use` first to match the version in [.nvmrc](.nvmrc).
 
-You will also need to create a file in the project's root folder called `.env.local` with the following content (or possibly other values depending on your setup):
+You will also need to create a file in the project's root folder called `.env.local`. You can start from [`.env.example`](.env.example):
+
+```bash
+cp .env.example .env.local
+```
+
+The default values are:
 
 ```bash
 VITE_API_URL=https://api.potber.de
 VITE_API_LOGIN_ENDPOINT=/auth/login
 VITE_API_SESSION_ENDPOINT=/auth/session
+VITE_API_HEALTH_ENDPOINT=/auth/session
+VITE_API_REQUEST_TIMEOUT_MS=5000
+VITE_API_HEALTH_TIMEOUT_MS=1500
 ```
 
 You can then start your local development server by running:

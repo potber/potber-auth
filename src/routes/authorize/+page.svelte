@@ -4,6 +4,7 @@
 	import Fa from 'svelte-fa';
 	import { faRightToBracket, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 	import { enhance } from '$app/forms';
+	import { resolve } from '$app/paths';
 	import SessionPanel from '$lib/features/session-panel/session-panel.svelte';
 	import { redirect } from '$lib/utils/client.utils';
 	import Select from '$lib/components/select/select.svelte';
@@ -13,40 +14,40 @@
 	export let data;
 
 	/** @type {Login.State} */
-	$: state = data.session && data.accessToken ? { status: 'active' } : { status: 'none' };
+	let state = data.session && data.accessToken ? { status: 'active' } : { status: 'none' };
 
 	/** @type {App.Session | undefined} */
-	$: session = data.session;
+	let session = data.session;
 
 	/** @type {string } */
-	$: accessToken = data.accessToken ?? '';
+	let accessToken = data.accessToken ?? '';
+
+	/** @type {string} */
+	const redirectUri = data.redirectUri;
 
 	/** @type {boolean} */
-	$: submitIsBusy = state.status === 'success' || state === 'pending';
+	$: submitIsBusy = state.status === 'success' || state.status === 'pending';
 
 	export function continueWithLogin() {
-		redirect(accessToken, 1000);
+		redirect(redirectUri, accessToken, 1000);
 	}
 </script>
 
 <span class={`backdrop ${state.status}`}></span>
-<div class={`login-container`}>
+<div class="login-container">
 	<div class="upper-section">
 		{#if session && accessToken}
-			<SessionPanel {session} {accessToken} />
+			<SessionPanel {session} {accessToken} {redirectUri} />
 		{:else}
 			<form
 				method="POST"
 				action="?/login"
 				use:enhance={() => {
-					state = 'pending';
+					state = { status: 'pending' };
 					return async ({ result }) => {
 						if (result.type === 'success' && result.data) {
 							state = { status: 'success', code: 200 };
-							// @ts-ignore
 							accessToken = result.data.accessToken;
-							// @ts-ignore
-							session = result.data.session;
 							continueWithLogin();
 						} else {
 							state = { status: 'failed', code: result.status };
@@ -84,7 +85,7 @@
 		{/if}
 	</div>
 
-	<a href="/about">
+	<a href={resolve('/about')}>
 		<Fa slot="icon" icon={faInfoCircle} />
 		Mehr Informationen
 	</a>
