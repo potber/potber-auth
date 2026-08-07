@@ -1,0 +1,13 @@
+*
+!.dockerignore
+!Dockerfile
+!.npmrc
+!package.json
+!package-lock.json
+!svelte.config.js
+!tsconfig.json
+!vite.config.js
+!src
+!src/**
+!static
+!static/**
