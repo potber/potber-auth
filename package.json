@@ -5,7 +5,7 @@
 	"description": "An authentication service for forum.mods.de based on OAuth using potber-api.",
 	"repository": "https://github.com/potber/potber-auth",
 	"license": "GPL-3.0-only",
-	"author": "https://github.com/spuxx-dev",
+	"author": "https://github.com/potber",
 	"scripts": {
 		"start": "vite dev",
 		"dev": "vite dev",
