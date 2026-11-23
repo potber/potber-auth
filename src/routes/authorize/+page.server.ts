@@ -84,7 +84,11 @@ export const actions = {
 			});
 			return { accessToken: access_token };
 		} catch (error) {
-			log(error as string, { level: 'error', context: 'Login' });
+			log('Unable to establish authenticated session.', {
+				context: 'Login',
+				error,
+				level: 'error'
+			});
 			return fail(500);
 		}
 	}

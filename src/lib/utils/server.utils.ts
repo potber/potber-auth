@@ -20,12 +20,38 @@ export async function fetchApi(
 	};
 	if (options?.accessToken) headers['Authorization'] = `Bearer ${accessToken}`;
 	const requestId = createRequestId();
-	log(`Outgoing request [${requestId}]: ${request?.method ?? 'GET'} ${url}`, { context: 'Fetch' });
-	const response = await fetch(url, { headers, ...request });
-	log(`Incoming response [${requestId}]: ${response.status} ${response.statusText}`, {
-		context: 'Fetch'
-	});
-	return response;
+	const startedAt = Date.now();
+	const fields = {
+		method: request?.method ?? 'GET',
+		path: new URL(url).pathname,
+		request_id: requestId
+	};
+	log('Outgoing API request.', { context: 'Fetch', fields });
+
+	try {
+		const response = await fetch(url, { headers, ...request });
+		log('API response received.', {
+			context: 'Fetch',
+			fields: {
+				...fields,
+				duration_ms: Date.now() - startedAt,
+				status_code: response.status
+			},
+			level: response.status >= 500 ? 'error' : 'info'
+		});
+		return response;
+	} catch (error) {
+		log('API request failed.', {
+			context: 'Fetch',
+			error,
+			fields: {
+				...fields,
+				duration_ms: Date.now() - startedAt
+			},
+			level: 'error'
+		});
+		throw error;
+	}
 }
 
 /**
